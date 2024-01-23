@@ -1,19 +1,20 @@
-FROM alpine:3.18.5
+FROM debian:bullseye
 
-RUN apk update && apk upgrade
+# Set environment variables for MariaDB
+ENV MYSQL_ROOT_PASSWORD="42porto"
+ENV MYSQL_DATABASE="database"
+ENV MYSQL_USER="tsodre-p"
+ENV MYSQL_PASSWORD="42porto"
 
-RUN apk add mariadb mariadb-client
+# Install MariaDB server
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends --no-install-suggests mariadb-server
+RUN apt-get clean
+RUN rm -rf /var/lib/apt/lists/*
 
-RUN mysql_install_db --user=mysql --datadir=/var/lib/mysql
+COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/
+COPY tools/script.sh /bin/
 
-RUN mkdir /etc/mysql
+RUN chmod +x /bin/script.sh
 
-COPY my.cnf /etc/mysql/my.cnf
-
-RUN mkdir -p /var/run/mysqld/
-
-RUN chown -R mysql:mysql /var/run/mysqld
-
-EXPOSE 3306
-
-CMD ["mysqld", "--user=mysql", "--datadir=/var/lib/mysql", "--socket=/var/run/mysqld/mysqld.sock", "--port=3306"]
+ENTRYPOINT ["sh", "/bin/script.sh"]

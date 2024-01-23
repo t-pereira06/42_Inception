@@ -1,14 +1,10 @@
-FROM alpine:3.18.5
+FROM debian:bullseye
 
-RUN apk update && apk upgrade
+RUN apt-get update
 
-RUN apk add nginx
+RUN apt-get install -y --no-install-recommends --no-install-suggestions nginx openssl
 
-RUN apk add openssl
-
-RUN mkdir -p /etc/nginx/ssl && \
-	chown -R nginx:nginx /etc/nginx/ssl && \
-	chown -R 700 /etc/nginx/ssl
+RUN mkdir -p /etc/nginx/ssl
 
 # openssl req : generates certificate signing request
 # -x509 : creates self-signed certificate instead of certf req
@@ -22,7 +18,7 @@ RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
     -keyout /etc/nginx/ssl/nginx.key -out /etc/nginx/ssl/nginx.crt \
     -subj "/C=PT/ST=Porto/L=Porto/O=42 Porto/CN=tsodre-p"
 
-COPY config/nginx.conf /etc/nginx/nginx.conf
+COPY conf/nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 443
 
