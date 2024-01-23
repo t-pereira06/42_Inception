@@ -5,12 +5,13 @@ RUN apt-get install wget -yq
 RUN apt-get install vim -yq
 RUN apt-get install curl -yq
 RUN apt-get install sudo -yq
-#Next lines of code have the purpose of installing the php repository, as it could't find php
+
+#Next lines of code have the purpose of installing the php repository
 RUN apt-get install ca-certificates apt-transport-https software-properties-common curl lsb-release -y
 RUN curl -sSL https://packages.sury.org/php/README.txt | sudo bash -x
 RUN apt-get update
 RUN apt-get upgrade -y
-RUN apt-get install php8.2-cli php8.2-fpm php8.2-mysql -yq
+RUN apt-get install php8.2-fpm php8.2-mysql -yq
 
 # Fix the date to put it correctly
 RUN ln -sf /usr/share/zoneinfo/Europe/Lisbon /etc/localtime
