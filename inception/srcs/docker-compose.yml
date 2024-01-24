@@ -1,0 +1,77 @@
+version: '3.8'
+services:
+    nginx:
+      build: ./requirements/nginx
+      container_name: nginx
+      restart: always
+      depends_on:
+        - mariadb
+        - wordpress
+      ports:
+        - 443:443
+      environment:
+        SCHOOL_USERNAME: ${USERNAME}
+        NGINX_WORDPRESS_CONTAINER_NAME: ${NGINX_WORDPRESS_CONTAINER_NAME}
+        NGINX_WORDPRESS_PORT: ${NGINX_WORDPRESS_PORT}
+      networks:
+        - inception
+      volumes:
+        - wordpress:/var/www/html
+    
+    mariadb:
+      build: ./requirements/mariadb
+      container_name: mariadb
+      restart: always
+      expose:
+        - 3306
+      environment:
+        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+        MYSQL_DATABASE: ${MYSQL_DATABASE}
+        MYSQL_USER: ${MYSQL_USER}
+        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      networks:
+        - inception
+      volumes:
+        - mariadb:/var/lib/mysql
+    
+    wordpress:
+      build: ./requirements/wordpress
+      container_name: wordpresss
+      restart: always
+      depends_on:
+        - mariadb
+      expose:
+        - 9000
+      environment:
+        MYSQL_DATABASE: ${MYSQL_DATABASE}
+        MYSQL_USER: ${MYSQL_USER}
+        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+        MYSQL_DBHOST: ${MYSQL_DBHOST}
+      networks:
+        - inception
+      volumes:
+        - wordpress:/var/www/html
+
+networks:
+  inception:
+    driver: bridge
+
+volumes:
+  nginx:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/${USERNAME}/data/nginx
+      o: bind
+  mariadb:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/${USERNAME}/data/mariadb
+      o: bind
+  wordpress:
+    driver: local
+    driver_opts:
+      type: none
+      device: /home/${USERNAME}/data/wordpress
+      o: bind
