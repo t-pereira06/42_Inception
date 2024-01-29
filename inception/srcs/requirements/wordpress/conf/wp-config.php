@@ -29,7 +29,13 @@ define( 'DB_USER', getenv('MYSQL_USER') );
 define( 'DB_PASSWORD', getenv('MYSQL_PASSWORD') );
 
 /** Database hostname */
-define( 'DB_HOST', getenv('MYSQL_DBHOST') );
+define( 'DB_HOST', getenv('MYSQL_HOST') );
+
+/** WordPress Home URL */
+define( 'WP_HOME', getenv('WP_FULL_URL') );
+
+/** WordPress Site URL */
+define( 'WP_SITEURL', getenv('WP_FULL_URL') );
 
 /** Database charset to use in creating database tables. */
 define( 'DB_CHARSET', 'utf8' );
@@ -82,8 +88,6 @@ $table_prefix = 'wp_';
 define( 'WP_DEBUG', false );
 
 /* Add any custom values between this line and the "stop editing" line. */
-
-
 
 /* That's all, stop editing! Happy publishing. */
 
