@@ -1,11 +1,5 @@
 FROM debian:bullseye
 
-# Set environment variables for MariaDB
-#ENV MYSQL_ROOT_PASSWORD="42porto"
-#ENV MYSQL_DATABASE="database"
-#ENV MYSQL_USER="tsodre-p"
-#ENV MYSQL_PASSWORD="42porto"
-
 # Install MariaDB server
 RUN apt-get update
 RUN apt-get install mariadb-server -yq

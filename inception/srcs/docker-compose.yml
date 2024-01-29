@@ -1,7 +1,13 @@
 version: '3.8'
 services:
     nginx:
-      build: ./requirements/nginx
+      build: 
+        context: ./requirements/nginx
+        args:
+        - SCHOOL_USERNAME
+        - DOMAIN_NAME
+        - NGINX_CERT
+        - NGINX_KEY
       container_name: nginx
       restart: always
       depends_on:
@@ -9,10 +15,8 @@ services:
         - wordpress
       ports:
         - 443:443
-      environment:
-        SCHOOL_USERNAME: ${USERNAME}
-        NGINX_WORDPRESS_CONTAINER_NAME: ${NGINX_WORDPRESS_CONTAINER_NAME}
-        NGINX_WORDPRESS_PORT: ${NGINX_WORDPRESS_PORT}
+      env_file:
+        - .env
       networks:
         - inception
       volumes:
@@ -24,11 +28,8 @@ services:
       restart: always
       expose:
         - 3306
-      environment:
-        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-        MYSQL_DATABASE: ${MYSQL_DATABASE}
-        MYSQL_USER: ${MYSQL_USER}
-        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      env_file:
+        - .env
       networks:
         - inception
       volumes:
@@ -36,17 +37,14 @@ services:
     
     wordpress:
       build: ./requirements/wordpress
-      container_name: wordpresss
+      container_name: wordpress
       restart: always
       depends_on:
         - mariadb
       expose:
         - 9000
-      environment:
-        MYSQL_DATABASE: ${MYSQL_DATABASE}
-        MYSQL_USER: ${MYSQL_USER}
-        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-        MYSQL_DBHOST: ${MYSQL_DBHOST}
+      env_file:
+        - .env
       networks:
         - inception
       volumes:
