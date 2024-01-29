@@ -13,30 +13,28 @@ RUN apt-get update
 RUN apt-get upgrade -y
 RUN apt-get install -yq --no-install-recommends php7.4-fpm php7.4-mysql 
 
-# Fix the date to put it correctly
-RUN ln -sf /usr/share/zoneinfo/Europe/Lisbon /etc/localtime
 
-COPY tools/ tmp/
+# Download and extract WordPress
+RUN wget https://wordpress.org/wordpress-6.3.1.tar.gz -P /var/www
+RUN cd /var/www && tar -xzf wordpress-6.3.1.tar.gz && rm wordpress-6.3.1.tar.gz
 
-# Preparing the wordpress installation, downloading and putting the files
-# in the right folders
-RUN mkdir /var/www
-RUN mkdir /var/www/html
-RUN wget https://wordpress.org/latest.tar.gz
-RUN tar -xvzf latest.tar.gz
-RUN rm latest.tar.gz
-WORKDIR /var/www/html/wordpress
-COPY /conf/ .
-RUN chown -R www-data:www-data /var/www/html/wordpress
+# Copy the WordPress configuration file
+COPY ./conf/wp-config.php /var/www/wordpress/
 
-# Copy php file we have changed and put it in the folder
-COPY /conf/www.conf /etc/php/fpm/pool.d/www.conf
+# Set ownership of the WordPress directory
+RUN chown -R root:root /var/www/wordpress
 
-# Install CLI wordpress, to be able to make changes on it
-WORKDIR /tmp/
-RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+# Configure PHP to work with WordPress
+COPY	./conf/www.conf /etc/php/7.4/fpm/pool.d/
+RUN	mkdir -p /run/php
+
+# Download and install WordPress Command Line Interface
+RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 RUN chmod +x wp-cli.phar
-RUN mv wp-cli.phar /usr/local/bin/wp-cli
+RUN mv wp-cli.phar /usr/local/bin/wp
 
-#Line for docker to run script when starting
-ENTRYPOINT ["sh","-c", "/bin/bash /tmp/startwp.sh;"]
+# Copy the WordPress setup script
+COPY	./tools/setup.sh /bin/
+RUN	chmod +x /bin/setup.sh
+
+ENTRYPOINT	["sh", "/bin/setup.sh"]
