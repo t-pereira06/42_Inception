@@ -1,6 +1,38 @@
 version: '3.8'
 services:
+    mariadb:
+      image: mariadb:42
+      container_name: mariadb
+      build: ./requirements/mariadb/
+      expose:
+        - "3306" # Expose port 3306 to other services
+      volumes:
+        - mariadb:/var/lib/mysql/
+      networks:
+        - inception # Custom network
+      env_file: .env # Inject variables into the env of the container
+      init: true
+      restart: on-failure
+    
+    wordpress:
+      image: wordpress:inception
+      build: ./requirements/wordpress
+      container_name: wordpress
+      restart: on-failure
+      depends_on:
+        - mariadb
+      expose:
+        - 9000
+      env_file:
+        - .env
+      networks:
+        - inception
+      volumes:
+        - wordpress:/var/www/html
+      init: true
+
     nginx:
+      image: nginx:inception
       build: 
         context: ./requirements/nginx
         args:
@@ -22,46 +54,13 @@ services:
         - inception
       volumes:
         - wordpress:/var/www/html
-    
-    mariadb:
-      build: ./requirements/mariadb
-      container_name: mariadb
-      restart: on-failure
-      expose:
-        - 3306
-      env_file:
-        - .env
-      networks:
-        - inception
-      volumes:
-        - mariadb:/var/lib/mysql
-    
-    wordpress:
-      build: ./requirements/wordpress
-      container_name: wordpress
-      restart: on-failure
-      depends_on:
-        - mariadb
-      expose:
-        - 9000
-      env_file:
-        - .env
-      networks:
-        - inception
-      volumes:
-        - wordpress:/var/www/html
+      init: true
 
 networks:
   inception:
     driver: bridge
 
 volumes:
-  nginx:
-    driver: local
-    driver_opts:
-      type: none
-      device: /home/${USERNAME}/data/nginx
-      o: bind
   mariadb:
     driver: local
     driver_opts:
