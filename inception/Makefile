@@ -1,16 +1,16 @@
 NAME = inception
 SRCS = ./srcs/
 COMPOSE = ./srcs/docker-compose.yml
-#URL = tsodre-p.42.fr
 
 all: conf up
 
-conf:
-	@echo "$(GREEN)Configuring everything...$(RESET)\n"
+conf: #dont forget the env
 	@cp ./.env ./srcs/
-	@mkdir -p /home/tsodre-p/data/wordpress /home/tsodre-p/data/mariadb
+	@echo "Creating volumes...\n"
+	@mkdir -p /home/tsodre-p/data/mariadb_vol /home/tsodre-p/data/wordpress_vol
 	@sudo sed -i '/^127.0.0.1/ {/tsodre-p.42.fr/! s/localhost/localhost tsodre-p.42.fr/}' /etc/hosts
-	@echo "$(GREEN)Done!$(RESET)"
+	@echo "\n"
+	@echo "Starting docker compose up..."
 
 up:
 	docker compose -p $(NAME) -f $(COMPOSE) up --build -d mariadb wordpress nginx

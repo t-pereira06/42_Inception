@@ -3,7 +3,7 @@
  * The base configuration for WordPress
  *
  * The wp-config.php creation script uses this file during the installation.
- * You don't have to use the website, you can copy this file to "wp-config.php"
+ * You don't have to use the web site, you can copy this file to "wp-config.php"
  * and fill in the values.
  *
  * This file contains the following configurations:
@@ -20,21 +20,18 @@
 
 // ** Database settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
-define( 'DB_NAME', getenv('MYSQL_DATABASE') );
+define( 'DB_NAME', getenv('SQL_DATABASE'));
 
 /** Database username */
-define( 'DB_USER', getenv('MYSQL_USER') );
+define( 'DB_USER', getenv('SQL_USER'));
 
 /** Database password */
-define( 'DB_PASSWORD', getenv('MYSQL_PASSWORD') );
+define( 'DB_PASSWORD', getenv('SQL_PASSWORD'));
 
 /** Database hostname */
-define( 'DB_HOST', getenv('MYSQL_HOST') );
+define( 'DB_HOST', getenv('SQL_HOST'));
 
-/** WordPress Home URL */
 define( 'WP_HOME', getenv('WP_FULL_URL') );
-
-/** WordPress Site URL */
 define( 'WP_SITEURL', getenv('WP_FULL_URL') );
 
 /** Database charset to use in creating database tables. */
@@ -88,6 +85,8 @@ $table_prefix = 'wp_';
 define( 'WP_DEBUG', false );
 
 /* Add any custom values between this line and the "stop editing" line. */
+
+
 
 /* That's all, stop editing! Happy publishing. */
 

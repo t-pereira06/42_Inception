@@ -1,16 +1,23 @@
-# Penultimate stable version of Debian
+# Use the Debian Bullseye base image
 FROM debian:bullseye
 
+# Expose port 3306 for MariaDB, the default port for MariaDB.
 EXPOSE 3306
 
-RUN	apt update \
-	&& apt install -y --no-install-recommends --no-install-suggests \
-	mariadb-server \
-	&& rm -rf /var/lib/apt/lists/*
+# : Installs MariaDB and cleans up unnecessary files after installation.
+RUN apt update && \
+    apt install -y --no-install-recommends --no-install-suggests \
+    mariadb-server && \
+    rm -rf /var/lib/apt/lists/*
 
-COPY	conf/50-server.cnf /etc/mysql/mariadb.conf.d/
+# Copy custom MariaDB server configuration
+COPY ./conf/50-server.cnf /etc/mysql/mariadb.conf.d/
 
-COPY	tools/startdb.sh /bin/
-RUN	chmod +x /bin/startdb.sh
+# Copy the script to the /bin/ directory
+COPY tools/script.sh /bin/
 
-CMD	["startdb.sh", "mysqld_safe"]
+# Make the script executable
+RUN chmod +x /bin/script.sh
+
+# Sets the cmd for the container to execute the specified script when the container starts.
+CMD	["script.sh", "mysqld_safe"]

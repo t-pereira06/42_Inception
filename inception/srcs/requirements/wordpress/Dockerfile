@@ -1,6 +1,10 @@
+# Penultimate stable version of Debian
 FROM debian:bullseye
 
+# Default port for PHP-FPM
 EXPOSE	9000
+
+ARG	PHPPATH=/etc/php/7.4/fpm
 
 RUN	apt update && apt install --no-install-recommends --no-install-suggests -y \
 	ca-certificates \
@@ -14,7 +18,7 @@ RUN	apt update && apt install --no-install-recommends --no-install-suggests -y \
 RUN wget https://wordpress.org/wordpress-6.3.1.tar.gz -P /var/www
 RUN cd /var/www && tar -xzf wordpress-6.3.1.tar.gz && rm wordpress-6.3.1.tar.gz
 
-# Copy the WordPress conf file
+# Copy the WordPress configuration file
 COPY ./conf/wp-config.php /var/www/wordpress/
 
 # Set ownership of the WordPress directory
@@ -30,7 +34,7 @@ RUN chmod +x wp-cli.phar
 RUN mv wp-cli.phar /usr/local/bin/wp
 
 # Copy the WordPress setup script
-COPY	./tools/startwp.sh /bin/
-RUN	chmod +x /bin/startwp.sh
+COPY ./tools/wp_script.sh /bin/
+RUN	chmod +x /bin/wp_script.sh
 
-ENTRYPOINT	["sh", "/bin/startwp.sh"]
+CMD	["sh", "/bin/wp_script.sh"]
