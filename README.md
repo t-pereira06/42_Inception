@@ -36,4 +36,3 @@ To run this project, execute the following commands:
 ```bash
 cd srcs
 make
-**
