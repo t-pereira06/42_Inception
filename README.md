@@ -11,6 +11,7 @@ machine.
 - [How to Run](#howtorun)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
+  - [Usage](#usage)
 
 ## Getting Started
 
@@ -31,8 +32,18 @@ How to install Docker Engine:
 
 ### Installation
 
+To install the project, execute the following commands:
+
+```bash
+git clone https://github.com/t-pereira06/42_Inception.git
+cd 42_Inception
+```
+
+### Usage
+
 To run this project, execute the following commands:
 
 ```bash
 cd srcs
 make
+```
